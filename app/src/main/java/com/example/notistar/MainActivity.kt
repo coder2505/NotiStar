@@ -1,29 +1,91 @@
 package com.example.notistar
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.NotificationManagerCompat
 import com.example.notistar.ui.theme.NotiStarTheme
 
 class MainActivity : ComponentActivity() {
 
+    companion object {
+        private const val TAG = "MAIN ACTIVITY"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             NotiStarTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
+
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .safeDrawingPadding(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    when(permissionCheck(LocalContext.current)){
+                        false->{
+
+                            Text("Cannot read notifications, without permission")
+                            Button({startSettingScreen()}) {
+                                Text("Give app permissions")
+                            }
+
+                        }
+                        true ->{
+
+                            Text("FAHHHHHH")
+
+                        }
+                    }
+
 
                 }
+
             }
         }
     }
+
+    fun permissionCheck(context: Context) : Boolean{
+
+        if(isNotificationListenerEnabled(context)){
+            Log.d(Companion.TAG, "permissionCheck: REQUEST HAS BEEN GRANTED")
+
+            return true
+        }else{
+            startSettingScreen()
+        }
+
+        return isNotificationListenerEnabled(context)
+
+
+    }
+
+    fun isNotificationListenerEnabled(context: Context): Boolean {
+        val myPackageName = context.packageName
+        val enabledPackages = NotificationManagerCompat.getEnabledListenerPackages(context)
+        return enabledPackages.contains(myPackageName)
+    }
+
+    fun startSettingScreen(){
+
+        val intent  = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+        startActivity(intent)
+
+    }
+
+
 }
