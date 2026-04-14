@@ -1,4 +1,4 @@
-package com.example.notistar
+package com.example.notistar.Services
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -12,13 +12,23 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         super.onNotificationPosted(sbn)
-        Log.d(TAG, "onNotificationPosted: ${sbn.toString()}")
+        if (sbn != null) {
+            Log.d(TAG, "onNotificationPosted: ${sbn.packageName}, ${sbn.notification.extras.getString("android.text")}")
+        }
     }
 
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         super.onNotificationRemoved(sbn)
 
-        Log.d(TAG, sbn.toString())
+        if (sbn != null) {
+            Log.d(TAG, "REMOVED NOTIFS ${sbn.notification.extras}")
+        }
+    }
+
+    override fun getActiveNotifications(): Array<StatusBarNotification> {
+
+        Log.d(TAG, "getActiveNotifications: ${super.getActiveNotifications()}")
+        return super.getActiveNotifications()
     }
 }
