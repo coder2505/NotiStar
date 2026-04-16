@@ -1,7 +1,10 @@
 package com.example.notistar.Services
+import android.icu.util.GregorianCalendar
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class NotificationListener : NotificationListenerService() {
@@ -13,22 +16,19 @@ class NotificationListener : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         super.onNotificationPosted(sbn)
         if (sbn != null) {
-            Log.d(TAG, "onNotificationPosted: ${sbn.packageName}, ${sbn.notification.extras.getString("android.text")}")
+            Log.d(TAG, "onNotificationPosted: ${sbn.notification.extras.getString("android.title")}")
+            Log.d(TAG, "onNotificationPosted: ${sbn.notification.extras.getString("android.text")}")
+            Log.d(TAG, "onNotificationPosted: ${sbn.packageName}")
+            val timestampMillis = sbn.postTime
+
+            val calendar = GregorianCalendar()
+            calendar.timeInMillis = timestampMillis
+
+            val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault())
+            val readableTime = formatter.format(calendar.time)
+
+            Log.d(TAG, "onNotificationPosted: Time: $readableTime")
+
         }
-    }
-
-
-    override fun onNotificationRemoved(sbn: StatusBarNotification?) {
-        super.onNotificationRemoved(sbn)
-
-        if (sbn != null) {
-            Log.d(TAG, "REMOVED NOTIFS ${sbn.notification.extras}")
-        }
-    }
-
-    override fun getActiveNotifications(): Array<StatusBarNotification> {
-
-        Log.d(TAG, "getActiveNotifications: ${super.getActiveNotifications()}")
-        return super.getActiveNotifications()
     }
 }

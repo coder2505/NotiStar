@@ -11,6 +11,6 @@ interface RoomDao {
     fun getAll(): List<RoomEntity>
 
     @Insert
-    fun insert(vararg data:RoomEntity)
+    fun insert(notif:RoomEntity)
 
 }
