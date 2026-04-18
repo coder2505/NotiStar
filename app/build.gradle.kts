@@ -1,13 +1,16 @@
+import com.google.devtools.ksp.processing.kspJsArgParser
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "com.example.notistar"
     compileSdk = 36
+
 
     defaultConfig {
         applicationId = "com.example.notistar"
@@ -19,6 +22,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+//    ksp {
+//        arg("room.schemaLocation", "$projectDir/schemas")
+//    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -29,14 +36,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+
     buildFeatures {
         compose = true
+    }
+}
+
+kotlin{
+    compilerOptions{
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
     }
 }
 
@@ -59,6 +70,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //room
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
@@ -70,4 +82,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.livedata)
 
+    //hilt
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+    
+    //coroutines
+    implementation(libs.kotlinx.coroutines.core)
 }

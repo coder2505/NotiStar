@@ -22,6 +22,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.notistar.ViewModels.PermissionCheck
 import com.example.notistar.ui.theme.NotiStarTheme
+import dagger.hilt.android.HiltAndroidApp
+
 
 
 class MainActivity : ComponentActivity() {
