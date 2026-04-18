@@ -76,18 +76,21 @@ dependencies {
 
 
     //stateflow
-
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.livedata)
 
     //hilt
-
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
-    
     //coroutines
     implementation(libs.kotlinx.coroutines.core)
+
+    //coil
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+
+
 }

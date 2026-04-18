@@ -47,7 +47,7 @@ class NotificationListener : NotificationListenerService() {
                 val calendar = GregorianCalendar()
                 calendar.timeInMillis = timestampMillis
 
-                val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault())
+                val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
                 val readableTime = formatter.format(calendar.time)
 
                 Log.d(TAG, "onNotificationPosted: Time: $readableTime")

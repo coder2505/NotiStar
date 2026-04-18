@@ -2,7 +2,9 @@ package com.example.notistar
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -10,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -27,11 +31,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.example.notistar.ViewModels.DBContents
 import com.example.notistar.ViewModels.PermissionCheck
 import com.example.notistar.data.database.RoomEntity
@@ -87,7 +101,7 @@ class MainActivity : ComponentActivity() {
 
                         true -> {
 
-                            MessagesList(listNotification.reversed())
+                            MessagesList(listNotification)
 
                         }
                     }
@@ -119,6 +133,7 @@ class MainActivity : ComponentActivity() {
         LazyColumn(
             modifier = Modifier.padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
+            reverseLayout = true
         ) {
             items(listNotification) { notification ->
 
@@ -135,7 +150,6 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    @Preview
     @Composable
     private fun MessageUI(
         packageName: String = "com.whatsapp",
@@ -159,15 +173,34 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(packageName)
-                    Text(time)
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier.size(30.dp,30.dp),
+                            model = getAppIconByPackageName(
+                                context = LocalContext.current,
+                                packageName
+                            ),
+                            contentDescription = null
+                        )
+                        Text(title, style = MaterialTheme.typography.titleMedium)
+                    }
+                    Text(time, style = TextStyle(fontStyle = FontStyle.Italic, fontWeight = FontWeight.Light, fontSize = 12.sp))
                 }
-                Text(title)
                 Text(textDesc)
             }
 
         }
 
+    }
+
+    fun getAppIconByPackageName(context: Context, packageName: String): Drawable? {
+        return try {
+            context.packageManager.getApplicationIcon(packageName)
+        } catch (e: PackageManager.NameNotFoundException) {
+            return null
+        }
     }
 
     private fun permissionCheck(context: Context) {
